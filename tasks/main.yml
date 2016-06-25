@@ -1,0 +1,31 @@
+---
+- name: add repository ppa:openjdk-r/ppa
+  apt_repository: repo='ppa:openjdk-r/ppa'
+
+- name: Install packages
+  apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+  with_items:
+    - software-properties-common
+    - build-essential
+    - ant
+    - git
+    - maven
+    - openjdk-8-jdk
+    - r-base
+    - ssh-import-id
+    - tar
+    - time
+    - ttf-ubuntu-font-family
+    - curl
+    - x11-utils
+    - x11-xkb-utils
+    - xauth
+    - libfontenc1
+    - libgl1-mesa-dri
+    - libgnutls28
+    - libtasn1-3-bin
+    - libxfont1
+    - libglu1-mesa
+    - openbox
+    - tint2
+    - autossh
