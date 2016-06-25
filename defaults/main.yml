@@ -1,2 +1,3 @@
 ---
-# defaults file for ansible-role-kepler
+tigervnc_url: https://bintray.com/artifact/download/tigervnc/stable/ubuntu-14.04LTS/amd64/tigervncserver_1.6.0-3ubuntu1_amd64.deb
+kepler_url: https://code.kepler-project.org/code/kepler/releases/installers/2.5/Kepler-2.5-linux.tar.gz
