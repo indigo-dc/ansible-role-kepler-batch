@@ -1,3 +1,9 @@
 ---
 tigervnc_url: https://bintray.com/artifact/download/tigervnc/stable/ubuntu-14.04LTS/amd64/tigervncserver_1.6.0-3ubuntu1_amd64.deb
 kepler_url: https://code.kepler-project.org/code/kepler/releases/installers/2.5/Kepler-2.5-linux.tar.gz
+
+environment:
+  JAVA: java-1.8.0-openjdk-amd64
+  JAVA_HOME: /usr/lib/jvm/${JAVA}
+  KEPLER: /usr/local/Kepler-2.5
+  PATH: ${PATH}:${KEPLER}

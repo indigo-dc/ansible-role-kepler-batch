@@ -40,10 +40,9 @@
   command: update-java-alternatives -s $JAVA
   environment:
     JAVA: java-1.8.0-openjdk-amd64
-    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
 
 - name: Install Kepler 2.5
-  unarchive: src={{ kepler_url }} dest=/usr/local copy=no
+  unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
 
 - name: git clone kepler indigo repos
   git: repo={{ item.repo }} dest={{ item.dest }} version={{ item.ver }} clone=yes
@@ -52,10 +51,5 @@
     - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler", ver: "1.0.0" }
 
 - name: mvn install indigoclient
-  command: mvn install chdir=/usr/local/indigoclient
-  environment:
-    JAVA: java-1.8.0-openjdk-amd64
-    JAVA_HOME: /usr/lib/jvm/${JAVA}
-    KEPLER: /usr/local/Kepler-2.5
-    PATH: ${PATH}:${KEPLER}
+  command: /usr/bin/mvn install chdir=/usr/local/indigoclient
 
