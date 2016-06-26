@@ -51,10 +51,33 @@
     - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler", ver: "1.0.0" }
 
 - name: mvn install indigoclient
-  command: /usr/bin/mvn install chdir=/usr/local/indigoclient
+  command: mvn install chdir=/usr/local/indigoclient
   environment:
     JAVA: java-1.8.0-openjdk-amd64
     JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
     KEPLER: /usr/local/Kepler-2.5
     PATH: ${PATH}:/usr/local/Kepler-2.5
 
+- name: mvn initialize indigokepler
+  command: mvn initialize chdir=/usr/local/indigokepler
+  environment:
+    JAVA: java-1.8.0-openjdk-amd64
+    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
+    KEPLER: /usr/local/Kepler-2.5
+    PATH: ${PATH}:/usr/local/Kepler-2.5
+
+- name: mvn install indigokepler
+  command: mvn install chdir=/usr/local/indigokepler
+  environment:
+    JAVA: java-1.8.0-openjdk-amd64
+    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
+    KEPLER: /usr/local/Kepler-2.5
+    PATH: ${PATH}:/usr/local/Kepler-2.5
+
+- name: mvn dependency indigokepler
+  command: mvn dependency:copy-dependencies -DoutputDirectory=target/indigo/lib/jar -DexcludeArtifactIds=ptolemy chdir=/usr/local/indigokepler
+  environment:
+    JAVA: java-1.8.0-openjdk-amd64
+    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
+    KEPLER: /usr/local/Kepler-2.5
+    PATH: ${PATH}:/usr/local/Kepler-2.5
