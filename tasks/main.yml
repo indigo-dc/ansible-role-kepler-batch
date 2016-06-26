@@ -52,4 +52,9 @@
 
 - name: mvn install indigoclient
   command: /usr/bin/mvn install chdir=/usr/local/indigoclient
+  environment:
+    JAVA: java-1.8.0-openjdk-amd64
+    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
+    KEPLER: /usr/local/Kepler-2.5
+    PATH: ${PATH}:/usr/local/Kepler-2.5
 
