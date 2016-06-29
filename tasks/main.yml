@@ -39,7 +39,7 @@
 - name: Update java alternatives
   command: update-java-alternatives -s $JAVA
   environment:
-    JAVA: java-1.8.0-openjdk-amd64
+    JAVA: "java-1.8.0-openjdk-amd64"
 
 - name: Install Kepler 2.5
   unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
@@ -53,31 +53,31 @@
 - name: mvn install indigoclient
   command: mvn install chdir=/usr/local/indigoclient
   environment:
-    JAVA: java-1.8.0-openjdk-amd64
-    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
-    KEPLER: /usr/local/Kepler-2.5
-    PATH: ${PATH}:/usr/local/Kepler-2.5
+    JAVA: "java-1.8.0-openjdk-amd64"
+    JAVA_HOME: "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
+    KEPLER: "/usr/local/Kepler-2.5"
+    PATH: "{{ ansible_env.PATH }}:/usr/local/Kepler-2.5"
 
 - name: mvn initialize indigokepler
   command: mvn initialize chdir=/usr/local/indigokepler
   environment:
-    JAVA: java-1.8.0-openjdk-amd64
-    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
-    KEPLER: /usr/local/Kepler-2.5
-    PATH: ${PATH}:/usr/local/Kepler-2.5
+    JAVA: "java-1.8.0-openjdk-amd64"
+    JAVA_HOME: "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
+    KEPLER: "/usr/local/Kepler-2.5"
+    PATH: "{{ ansible_env.PATH }}:/usr/local/Kepler-2.5"
 
 - name: mvn install indigokepler
   command: mvn install chdir=/usr/local/indigokepler
   environment:
-    JAVA: java-1.8.0-openjdk-amd64
-    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
-    KEPLER: /usr/local/Kepler-2.5
-    PATH: ${PATH}:/usr/local/Kepler-2.5
+    JAVA: "java-1.8.0-openjdk-amd64"
+    JAVA_HOME: "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
+    KEPLER: "/usr/local/Kepler-2.5"
+    PATH: "{{ ansible_env.PATH }}:/usr/local/Kepler-2.5"
 
 - name: mvn dependency indigokepler
   command: mvn dependency:copy-dependencies -DoutputDirectory=target/indigo/lib/jar -DexcludeArtifactIds=ptolemy chdir=/usr/local/indigokepler
   environment:
-    JAVA: java-1.8.0-openjdk-amd64
-    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-amd64
-    KEPLER: /usr/local/Kepler-2.5
-    PATH: ${PATH}:/usr/local/Kepler-2.5
+    JAVA: "java-1.8.0-openjdk-amd64"
+    JAVA_HOME: "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
+    KEPLER: "/usr/local/Kepler-2.5"
+    PATH: "{{ ansible_env.PATH }}:/usr/local/Kepler-2.5"
