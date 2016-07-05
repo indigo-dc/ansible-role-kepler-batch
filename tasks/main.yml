@@ -39,7 +39,7 @@
 - name: Update java alternatives
   command: update-java-alternatives -s $JAVA
   environment:
-    JAVA: "java-1.8.0-openjdk-amd64"
+    JAVA: {{ java }}
 
 - name: Install Kepler 2.5
   unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
@@ -53,31 +53,65 @@
 - name: mvn install indigoclient
   command: mvn install chdir=/usr/local/indigoclient
   environment:
-    JAVA: "java-1.8.0-openjdk-amd64"
-    JAVA_HOME: "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
-    KEPLER: "/usr/local/Kepler-2.5"
-    PATH: "{{ ansible_env.PATH }}:/usr/local/Kepler-2.5"
+    JAVA: {{ java }}
+    JAVA_HOME: {{ java_home }}
+    KEPLER: {{ kepler_home }}
+    PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
 
 - name: mvn initialize indigokepler
   command: mvn initialize chdir=/usr/local/indigokepler
   environment:
-    JAVA: "java-1.8.0-openjdk-amd64"
-    JAVA_HOME: "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
-    KEPLER: "/usr/local/Kepler-2.5"
-    PATH: "{{ ansible_env.PATH }}:/usr/local/Kepler-2.5"
+    JAVA: {{ java }}
+    JAVA_HOME: {{ java_home }}
+    KEPLER: {{ kepler_home }}
+    PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
 
 - name: mvn install indigokepler
   command: mvn install chdir=/usr/local/indigokepler
   environment:
-    JAVA: "java-1.8.0-openjdk-amd64"
-    JAVA_HOME: "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
-    KEPLER: "/usr/local/Kepler-2.5"
-    PATH: "{{ ansible_env.PATH }}:/usr/local/Kepler-2.5"
+    JAVA: {{ java }}
+    JAVA_HOME: {{ java_home }}
+    KEPLER: {{ kepler_home }}
+    PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
 
 - name: mvn dependency indigokepler
   command: mvn dependency:copy-dependencies -DoutputDirectory=target/indigo/lib/jar -DexcludeArtifactIds=ptolemy chdir=/usr/local/indigokepler
   environment:
-    JAVA: "java-1.8.0-openjdk-amd64"
-    JAVA_HOME: "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
-    KEPLER: "/usr/local/Kepler-2.5"
-    PATH: "{{ ansible_env.PATH }}:/usr/local/Kepler-2.5"
+    JAVA: {{ java }}
+    JAVA_HOME: {{ java_home }}
+    KEPLER: {{ kepler_home }}
+    PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
+
+- name: copy target/indigo to $KEPLER
+  command: /bin/cp -r /usr/local/indigokepler/target/indigo {{ kepler_home }}/
+  environment:
+    KEPLER: {{ kepler_home }}
+
+- name: insert indigo into kepler modules
+  command: /bin/echo "indigo" >> {{ kepler_home }}/build-area/modules.txt
+  environment:
+    KEPLER: {{ kepler_home }}
+
+- name: add user {{ user }}
+  useradd:
+    name: {{ user }}
+    password: {{ passcript }}
+    shell: /bin/bash
+    groups: adm,sudo
+    system: yes
+
+- name: make user directories
+  command: /bin/mkdir -p .vnc .config/openbox
+
+- name: copy files
+  copy: src={{ item.src }} dest={{ item.dst }} mode=700
+  with_items:
+    - { src: "vnc_xstartup", dst: "/home/{{ user }}/.vnc/xstartup" }
+    - { src: "openbox_autostart", dst: "/home/{{ user }}/.config/openbox/autostart" }
+    - { src: "openbox_menu.xml", dst: "/home/{{ user }}/.config/openbox/menu.xml" }
+
+- name: copy templates
+  template: src={{ item.src }} dest={{ item.dst }} mode=700
+  with_items:
+    - { src: "ssh_config.j2", dst: "/home/{{ user }}/.ssh/config" }
+    - { src: "init.sh.j2", dst: "/home/{{ user }}/init.sh" }

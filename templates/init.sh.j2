@@ -1,0 +1,18 @@
+#! /bin/bash
+ID=${MYID:-mariojmdavid}
+PASS=${UPASS:-kEpler10}
+FGUSER=${FGUSER:-futuregateway}
+FGHOST=${FGHOST:-90.147.74.77}
+
+cat << EOF > /home/ubuntu/.ssh/config
+Host $FGHOST
+    StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
+EOF
+
+/usr/bin/ssh-import-id {{ launchpadid }}
+/usr/bin/autossh -M 0 -f \
+        -o 'ServerAliveInterval 30' \
+        -o 'ServerAliveCountMax 3' \
+        -N -L 8888:localhost:8888 {{ fguser }}@{{ fghost }}
+exec /usr/bin/vncserver :0 -fg
