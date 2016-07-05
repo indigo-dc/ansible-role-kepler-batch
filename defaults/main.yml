@@ -1,3 +1,14 @@
 ---
-tigervnc_url: https://bintray.com/artifact/download/tigervnc/stable/ubuntu-14.04LTS/amd64/tigervncserver_1.6.0-3ubuntu1_amd64.deb
-kepler_url: https://code.kepler-project.org/code/kepler/releases/installers/2.5/Kepler-2.5-linux.tar.gz
+tigervnc_url: "https://bintray.com/artifact/download/tigervnc/stable/ubuntu-14.04LTS/amd64/tigervncserver_1.6.0-3ubuntu1_amd64.deb"
+kepler_url: "https://code.kepler-project.org/code/kepler/releases/installers/2.5/Kepler-2.5-linux.tar.gz"
+kepler_home: "/usr/local/Kepler-2.5"
+java: "java-1.8.0-openjdk-amd64"
+java_home: "/usr/lib/jvm/{{ java }}"
+
+# TODO: These should be in vars so that they are mandatory and no default value
+user: "ubuntu"
+password: "kEpler10"
+passcript: "$6$/klD69SF5AjwL$0pejYeEEAmZrgfW1O4MgCWM7BeWdf/r01ZfdlSxt/cVUhYg32DakNMQCuRvtKuM7MQ6pM2Q..a8VkUcWWR9/21"
+launchpadid: "mariojmdavid"
+fguser: "futuregateway"
+fghost: "90.147.74.77"
