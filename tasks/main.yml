@@ -94,8 +94,8 @@
 
 - name: add user {{ user }}
   useradd:
-    name: {{ user }}
-    password: {{ passcript }}
+    name: "{{ user }}"
+    password: "{{ passcript }}"
     shell: /bin/bash
     groups: adm,sudo
     system: yes
