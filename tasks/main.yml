@@ -99,6 +99,7 @@
   file: path={{ item }} state=directory mode=0700
   with_items:
     - /home/{{ user }}/.vnc
+    - /home/{{ user }}/.ssh
     - /home/{{ user }}/.config/openbox
 
 - name: copy files
