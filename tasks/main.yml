@@ -96,7 +96,10 @@
   user: name={{ user }} password={{ passcript }} shell=/bin/bash groups=adm,sudo system=yes
 
 - name: make user directories
-  command: /bin/mkdir -p .vnc .config/openbox
+  file: path={{ item }} state=directory mode=0700
+  with_items:
+    - /home/{{ user }}/.vnc
+    - /home/{{ user }}/.config/openbox
 
 - name: copy files
   copy: src={{ item.src }} dest={{ item.dst }} mode=700
