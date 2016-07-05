@@ -39,7 +39,7 @@
 - name: Update java alternatives
   command: update-java-alternatives -s $JAVA
   environment:
-    JAVA: {{ java }}
+    JAVA: "{{ javadir }}"
 
 - name: Install Kepler 2.5
   unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
@@ -53,44 +53,44 @@
 - name: mvn install indigoclient
   command: mvn install chdir=/usr/local/indigoclient
   environment:
-    JAVA: {{ java }}
-    JAVA_HOME: {{ java_home }}
-    KEPLER: {{ kepler_home }}
+    JAVA: "{{ javadir }}"
+    JAVA_HOME: "{{ java_home }}"
+    KEPLER: "{{ kepler_home }}"
     PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
 
 - name: mvn initialize indigokepler
   command: mvn initialize chdir=/usr/local/indigokepler
   environment:
-    JAVA: {{ java }}
-    JAVA_HOME: {{ java_home }}
-    KEPLER: {{ kepler_home }}
+    JAVA: "{{ javadir }}"
+    JAVA_HOME: "{{ java_home }}"
+    KEPLER: "{{ kepler_home }}"
     PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
 
 - name: mvn install indigokepler
   command: mvn install chdir=/usr/local/indigokepler
   environment:
-    JAVA: {{ java }}
-    JAVA_HOME: {{ java_home }}
-    KEPLER: {{ kepler_home }}
+    JAVA: "{{ javadir }}"
+    JAVA_HOME: "{{ java_home }}"
+    KEPLER: "{{ kepler_home }}"
     PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
 
 - name: mvn dependency indigokepler
   command: mvn dependency:copy-dependencies -DoutputDirectory=target/indigo/lib/jar -DexcludeArtifactIds=ptolemy chdir=/usr/local/indigokepler
   environment:
-    JAVA: {{ java }}
-    JAVA_HOME: {{ java_home }}
-    KEPLER: {{ kepler_home }}
+    JAVA: "{{ javadir }}"
+    JAVA_HOME: "{{ java_home }}"
+    KEPLER: "{{ kepler_home }}"
     PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
 
 - name: copy target/indigo to $KEPLER
   command: /bin/cp -r /usr/local/indigokepler/target/indigo {{ kepler_home }}/
   environment:
-    KEPLER: {{ kepler_home }}
+    KEPLER: "{{ kepler_home }}"
 
 - name: insert indigo into kepler modules
   command: /bin/echo "indigo" >> {{ kepler_home }}/build-area/modules.txt
   environment:
-    KEPLER: {{ kepler_home }}
+    KEPLER: "{{ kepler_home }}"
 
 - name: add user {{ user }}
   useradd:
