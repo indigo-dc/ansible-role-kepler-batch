@@ -92,25 +92,34 @@
   environment:
     KEPLER: "{{ kepler_home }}"
 
-- name: add user
+- name: add user {{ user }}
   user: name={{ user }} password={{ passcript }} shell=/bin/bash groups=adm,sudo system=yes
 
 - name: make user directories
-  file: path={{ item }} state=directory mode=0700
+  file: path={{ item }} state=directory owner={{ user }} group={{ user }} mode=0700
   with_items:
     - /home/{{ user }}/.vnc
     - /home/{{ user }}/.ssh
     - /home/{{ user }}/.config/openbox
+    - /home/{{ user }}/ophidia
 
 - name: copy files
-  copy: src={{ item.src }} dest={{ item.dst }} mode=700
+  copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
   with_items:
     - { src: "vnc_xstartup", dst: "/home/{{ user }}/.vnc/xstartup" }
     - { src: "openbox_autostart", dst: "/home/{{ user }}/.config/openbox/autostart" }
     - { src: "openbox_menu.xml", dst: "/home/{{ user }}/.config/openbox/menu.xml" }
 
+- name: copy indigo workflows
+  file: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
+  with_items:
+    - { src: "/usr/local/indigokepler-1.0.0/workflows/ophidia", dst: "/home/{{ user }}/ophidia" }
+    - { src: "/usr/local/indigokepler-1.0.0/workflows/OphidiaClimateDocker.kar", dst: "/home/{{ user }}/OphidiaClimateDocker.kar" }
+
 - name: copy templates
-  template: src={{ item.src }} dest={{ item.dst }} mode=700
+  template: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
   with_items:
     - { src: "ssh_config.j2", dst: "/home/{{ user }}/.ssh/config" }
     - { src: "init.sh.j2", dst: "/home/{{ user }}/init.sh" }
+    - { src: "oph-credentials.txt.j2", dst: "/home/{{ user }}/ophidia/oph-credentials.txt" }
+

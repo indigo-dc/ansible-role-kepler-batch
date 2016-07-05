@@ -1,18 +1,20 @@
-#! /bin/bash
-ID=${MYID:-mariojmdavid}
-PASS=${UPASS:-kEpler10}
-FGUSER=${FGUSER:-futuregateway}
-FGHOST=${FGHOST:-90.147.74.77}
+ID=${MYID:-{{ launchpadid }}}
+PASS=${UPASS:-{{ password }}}
+FGUSER=${FGUSER:-{{ fguser }}}
+FGHOST=${FGHOST:-{{ fghost }}}
 
-cat << EOF > /home/ubuntu/.ssh/config
+cat << EOF > /home/{{ user }}/.ssh/config
 Host $FGHOST
     StrictHostKeyChecking no
     UserKnownHostsFile=/dev/null
 EOF
 
-/usr/bin/ssh-import-id {{ launchpadid }}
+echo "ubuntu:$PASS" | sudo /usr/sbin/chpasswd
+echo $PASS | vncpasswd -f > /home/{{ user }}/.vnc/passwd
+chmod 600 /home/{{ user }}/.vnc/passwd
+/usr/bin/ssh-import-id ${ID}
 /usr/bin/autossh -M 0 -f \
         -o 'ServerAliveInterval 30' \
         -o 'ServerAliveCountMax 3' \
-        -N -L 8888:localhost:8888 {{ fguser }}@{{ fghost }}
+        -N -L 8888:localhost:8888 ${FGUSER}@${FGHOST}
 exec /usr/bin/vncserver :0 -fg

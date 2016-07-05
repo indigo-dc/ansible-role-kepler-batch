@@ -8,6 +8,7 @@ java_home: "/usr/lib/jvm/{{ javadir }}"
 # TODO: These should be in vars so that they are mandatory and no default value
 user: "ubuntu"
 password: "kEpler10"
+oph_cred: "demo:Qk_45gKop"
 passcript: "$6$/klD69SF5AjwL$0pejYeEEAmZrgfW1O4MgCWM7BeWdf/r01ZfdlSxt/cVUhYg32DakNMQCuRvtKuM7MQ6pM2Q..a8VkUcWWR9/21"
 launchpadid: "mariojmdavid"
 fguser: "futuregateway"
