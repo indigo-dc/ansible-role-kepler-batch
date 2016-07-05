@@ -92,13 +92,8 @@
   environment:
     KEPLER: "{{ kepler_home }}"
 
-- name: add user {{ user }}
-  useradd:
-    name: "{{ user }}"
-    password: "{{ passcript }}"
-    shell: /bin/bash
-    groups: adm,sudo
-    system: yes
+- name: add user
+  user: name={{ user }} password={{ passcript }} shell=/bin/bash groups=adm,sudo system=yes
 
 - name: make user directories
   command: /bin/mkdir -p .vnc .config/openbox
