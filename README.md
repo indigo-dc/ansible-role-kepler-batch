@@ -3,8 +3,6 @@ Role and Dockerfile for Kepler Workflow engine
 
 Roles and Dockerfiles to install the Kepler Workflow engine:
 
-* To be updated
-
 Introduction
 ------------
 
@@ -26,6 +24,18 @@ Role Variables
 
 The variables that can be passed to this role and a brief description
 about them are as follows.
+
+* tigervnc_url: tivervnc deb url
+* kepler_url: kepler tarball url
+* kepler_home: kepler home
+* javadir: java version
+* java_home: java home
+* user: user
+* password: user passwd
+* oph_cred: ophidia credentials
+* launchpadid: LauchpadID of user
+* fguser: Future Gateway user
+* fghost: Future Gateway host
 
 Dependencies
 ------------
@@ -62,8 +72,6 @@ $ ansible-playbook /etc/ansible/roles/indigo-dc.kepler/tests/kepler.yml
 
 Run the kepler workflow application
 -----------------------------------
-
-To be updated
 
 License
 -------

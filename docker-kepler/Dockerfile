@@ -1,4 +1,4 @@
-# docker build -t docker-kepler .
+# docker build --rm -t docker-kepler .
 
 FROM indigodatacloud/ubuntu-sshd:14.04
 MAINTAINER Mario David <mariojmdavid@gmail.com>
@@ -9,3 +9,4 @@ RUN ansible-galaxy install indigo-dc.kepler && \
 
 EXPOSE 22 5900
 CMD [ "/home/ubuntu/init.sh" ]
+
