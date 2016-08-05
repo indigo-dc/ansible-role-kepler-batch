@@ -3,17 +3,15 @@ Docker image for the kepler scientific workflow engine
 
 ## Build
 
-TO BE UPDATED
-
 ```
-docker build -t docker-kepler .
+docker build -rm -t kepler .
 ```
 
 ## Run the image
 
 
 ```
-docker run -p 2020:22 -p 5900:5900 -d docker-kepler
+docker run -p 2020:22 -p 5900:5900 -d kepler
 ```
 
 Access through ssh
