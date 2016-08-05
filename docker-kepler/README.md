@@ -4,7 +4,7 @@ Docker image for the kepler scientific workflow engine
 ## Build
 
 ```
-docker build -rm -t kepler .
+docker build --rm -t kepler .
 ```
 
 ## Run the image
