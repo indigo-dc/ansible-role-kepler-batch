@@ -47,8 +47,8 @@
 - name: git clone kepler indigo repos
   git: repo={{ item.repo }} dest={{ item.dest }} version={{ item.ver }} clone=yes
   with_items:
-    - { repo: "https://github.com/indigo-dc/indigoclient.git", dest: "/usr/local/indigoclient", ver: "1.0.0" }
-    - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler", ver: "1.0.0" }
+    - { repo: "https://github.com/indigo-dc/indigoclient.git", dest: "/usr/local/indigoclient", ver: "v1.0.1" }
+    - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler", ver: "v1.0.1" }
 
 - name: mvn install indigoclient
   command: mvn install chdir=/usr/local/indigoclient
