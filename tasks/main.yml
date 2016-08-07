@@ -113,7 +113,7 @@
   copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
   with_items:
     - { src: "/usr/local/indigokepler/workflows/ophidia", dst: "/home/{{ user }}/" }
-    - { src: "/usr/local/indigokepler/workflows/OphidiaClimateDocker.kar", dst: "/home/{{ user }}/OphidiaClimateDocker.kar" }
+    - { src: "/usr/local/indigokepler/workflows/ophidia/pilot/OphidiaPilot.kar", dst: "/home/{{ user }}/OphidiaClimateDocker.kar" }
 
 - name: copy templates
   template: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
