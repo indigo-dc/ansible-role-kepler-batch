@@ -88,9 +88,7 @@
     KEPLER: "{{ kepler_home }}"
 
 - name: insert indigo into kepler modules
-  command: /bin/echo "indigo" >> {{ kepler_home }}/build-area/modules.txt
-  environment:
-    KEPLER: "{{ kepler_home }}"
+  lineinfile: dest={{ kepler_home }}/build-area/modules.txt insertbefore=BOF line=indigo
 
 - name: add user {{ user }}
   user: name={{ user }} password={{ passcript }} shell=/bin/bash groups=adm,sudo system=yes
