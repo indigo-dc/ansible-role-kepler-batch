@@ -1,3 +1,4 @@
+#! /bin/bash
 ID=${MYID:-{{ launchpadid }}}
 PASS=${UPASS:-{{ password }}}
 FGUSER=${FGUSER:-{{ fguser }}}
@@ -9,7 +10,6 @@ Host $FGHOST
     UserKnownHostsFile=/dev/null
 EOF
 
-echo "ubuntu:$PASS" | sudo /usr/sbin/chpasswd
 echo $PASS | vncpasswd -f > /home/{{ user }}/.vnc/passwd
 chmod 600 /home/{{ user }}/.vnc/passwd
 /usr/bin/ssh-import-id ${ID}
