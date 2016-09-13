@@ -1,6 +1,6 @@
 # docker build --rm -t docker-kepler .
 
-FROM lipcomputing/ansible-ubuntu14.04
+FROM indigodatacloud/ubuntu-sshd:14.04
 MAINTAINER Mario David <mariojmdavid@gmail.com>
 LABEL description="Container image to run Kepler WF engine"
 
@@ -9,5 +9,5 @@ RUN ansible-galaxy install indigo-dc.kepler && \
 
 EXPOSE 22 5900
 USER ubuntu
-CMD [ "/home/ubuntu/init.sh" ]
+CMD /etc/init.d/vmcontext start; /home/ubuntu/init.sh
 
