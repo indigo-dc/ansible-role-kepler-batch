@@ -9,5 +9,4 @@ RUN ansible-galaxy install indigo-dc.kepler && \
 
 EXPOSE 22 5900
 USER ubuntu
-CMD /etc/init.d/vmcontext start; /home/ubuntu/init.sh
-
+CMD /etc/init.d/vmcontext start

@@ -28,7 +28,6 @@
     - libglu1-mesa
     - openbox
     - tint2
-    - autossh
 
 - name: Install tigervnc
   apt: deb={{ tigervnc_url }}
@@ -101,22 +100,25 @@
     - /home/{{ user }}/.config/openbox
 
 - name: copy files
-  copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
+  copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode="u=rw"
   with_items:
+    - { src: "passwd", dst: "/home/{{ user }}/.vnc/passwd" }
     - { src: "vnc_xstartup", dst: "/home/{{ user }}/.vnc/xstartup" }
     - { src: "openbox_autostart", dst: "/home/{{ user }}/.config/openbox/autostart" }
     - { src: "openbox_menu.xml", dst: "/home/{{ user }}/.config/openbox/menu.xml" }
 
 - name: copy indigo workflows
-  copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
+  copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode="u=rw"
   with_items:
     - { src: "/usr/local/indigokepler/workflows/ophidia", dst: "/home/{{ user }}/" }
     - { src: "/usr/local/indigokepler/workflows/ophidia/pilot/OphidiaPilot.kar", dst: "/home/{{ user }}/OphidiaClimateDocker.kar" }
 
 - name: copy templates
-  template: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
+  template: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode="u=rw"
   with_items:
     - { src: "ssh_config.j2", dst: "/home/{{ user }}/.ssh/config" }
-    - { src: "init.sh.j2", dst: "/home/{{ user }}/init.sh" }
     - { src: "oph-credentials.txt.j2", dst: "/home/{{ user }}/ophidia/oph-credentials.txt" }
 
+- name: configure vnc service
+  lineinfile: dest=/etc/default/vncserver line="VNCSERVERS='0:ubuntu'"
+  service: name=vncserver state=started enabled=yes
