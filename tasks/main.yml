@@ -5,29 +5,12 @@
 - name: Install packages
   apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
   with_items:
-    - software-properties-common
-    - build-essential
-    - ant
     - git
     - maven
     - openjdk-8-jdk
-    - r-base
-    - ssh-import-id
-    - tar
-    - time
-    - ttf-ubuntu-font-family
-    - curl
-    - x11-utils
-    - x11-xkb-utils
-    - xauth
-    - libfontenc1
-    - libgl1-mesa-dri
-    - libgnutls28
-    - libtasn1-3-bin
-    - libxfont1
-    - libglu1-mesa
     - openbox
     - tint2
+    - x11-xkb-utils
 
 - name: Install tigervnc
   apt: deb={{ tigervnc_url }}
@@ -99,19 +82,23 @@
     - /home/{{ user }}/.ssh
     - /home/{{ user }}/.config/openbox
 
-- name: copy files
+- name: copy Openbox configuration files
   copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode="u=rw"
   with_items:
-    - { src: "passwd", dst: "/home/{{ user }}/.vnc/passwd" }
-    - { src: "vnc_xstartup", dst: "/home/{{ user }}/.vnc/xstartup" }
     - { src: "openbox_autostart", dst: "/home/{{ user }}/.config/openbox/autostart" }
     - { src: "openbox_menu.xml", dst: "/home/{{ user }}/.config/openbox/menu.xml" }
 
+- name: copy executable VNC's xstartup file
+  copy: src=vnc_xstartup dest=/home/{{ user }}/.vnc/xstartup owner={{ user }} group={{ user }} mode="u=rwx,g=rx,o=rx"
+
+- name: copy pre-defined VNC password with 600 mode
+  copy: src=vnc_passwd dest=/home/{{ user }}/.vnc/passwd owner={{ user }} group={{ user }} mode="u=rw,g=,o="
+
 - name: copy indigo workflows
-  copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode="u=rw"
-  with_items:
-    - { src: "/usr/local/indigokepler/workflows/ophidia", dst: "/home/{{ user }}/" }
-    - { src: "/usr/local/indigokepler/workflows/ophidia/pilot/OphidiaPilot.kar", dst: "/home/{{ user }}/OphidiaClimateDocker.kar" }
+  command: cp -r /usr/local/indigokepler/workflows/ophidia /home/{{ user }}
+
+- name: copy default demo workflow
+  command: cp -r /usr/local/indigokepler/workflows/ophidia/pilot/OphidiaPilot.kar /home/{{ user }}/OphidiaClimateDocker.kar
 
 - name: copy templates
   template: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode="u=rw"
@@ -120,5 +107,7 @@
     - { src: "oph-credentials.txt.j2", dst: "/home/{{ user }}/ophidia/oph-credentials.txt" }
 
 - name: configure vnc service
-  lineinfile: dest=/etc/default/vncserver line="VNCSERVERS='0:ubuntu'"
+  lineinfile: dest=/etc/default/vncservers create=yes line="VNCSERVERS='0:ubuntu'"
+
+- name: start and enable vnc service
   service: name=vncserver state=started enabled=yes
