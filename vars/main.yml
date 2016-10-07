@@ -1,2 +1,3 @@
 ---
 # vars file for ansible-role-kepler
+fg_uri: "http://fgw01.ncg.ingrid.pt:8888"

@@ -5,7 +5,7 @@
     <menu id="root-menu" label="Menu">
         <item label="Kepler">
             <action name="Execute">
-                <execute>/usr/local/Kepler-2.5/kepler.sh</execute>
+                <command>/usr/bin/kepler</command>
             </action>
         </item>
     </menu>
