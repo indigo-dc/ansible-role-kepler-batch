@@ -21,8 +21,12 @@
 - name: configure vnc service
   lineinfile: dest=/etc/default/vncservers create=yes line="VNCSERVERS=0:{{ user }}"
 
+# random password generation, currently disabled due to external limitations
+# - name: add new user {{ user }}
+#   user: name={{ user }} password={{ lookup("password", "/tmp/ansible-{{ user }}-password encrypt=sha256_crypt") }} shell=/bin/bash groups=adm,sudo system=yes
+
 - name: add new user {{ user }}
-  user: name={{ user }} password={{ lookup("password", "/tmp/ansible-{{ user }}-password encrypt=sha256_crypt") }} shell=/bin/bash groups=adm,sudo system=yes
+  user: name={{ user }} password={{ password_crypt }} shell=/bin/bash groups=adm,sudo
 
 - name: create required directories
   file: path={{ item }} state=directory owner={{ user }} group={{ user }} mode="u=rwx"
@@ -40,10 +44,14 @@
       - { src: "ophidia_oph-credentials.txt", dest: "/home/{{ user }}/ophidia/oph-credentials.txt", mode: "u=rw" }
 
 - name: prepare kepler launcher in menu which uses correct environment variables
-  template: src=kepler.j2 dest=/usr/bin/kepler mode="u=rwx,g=rx,o=rx" 
+  template: src=kepler.j2 dest=/usr/bin/kepler mode="u=rwx,g=rx,o=rx"
+
+# random password generation, currently disabled due to external limitations
+# - name: create password file for vnc
+#   shell: echo {{ lookup("password", "/tmp/ansible-vnc-password") }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
 
 - name: create password file for vnc
-  shell: echo {{ lookup("password", "/tmp/ansible-vnc-password") }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
+  shell: echo {{ password_vnc }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
 
 - name: set valid mode for password file for vnc
   file: owner={{ user }} group={{ user }} mode="u=rw,g=,o=" path=/home/{{ user }}/.vnc/passwd
