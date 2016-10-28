@@ -11,6 +11,10 @@
     - openjdk-8-jdk
     - tint2
     - x11-xkb-utils
+    - libgnutls28
+    - libtasn1-3-bin
+    - libxfont1
+    - libglu1-mesa
 
 - name: update java alternatives
   command: update-java-alternatives -s {{ java_version }}
