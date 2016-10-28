@@ -1,122 +1,90 @@
 ---
 - name: add repository ppa:openjdk-r/ppa
-  apt_repository: repo='ppa:openjdk-r/ppa' update_cache=yes state=present
+  apt_repository: repo=ppa:openjdk-r/ppa update_cache=yes state=present
 
-- name: Install packages
+- name: install required packages
   apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
   with_items:
-    - software-properties-common
-    - build-essential
-    - ant
     - git
     - maven
-    - openjdk-8-jdk
-    - r-base
-    - ssh-import-id
-    - tar
-    - time
-    - ttf-ubuntu-font-family
-    - curl
-    - x11-utils
-    - x11-xkb-utils
-    - xauth
-    - libfontenc1
-    - libgl1-mesa-dri
-    - libgnutls28
-    - libtasn1-3-bin
-    - libxfont1
-    - libglu1-mesa
     - openbox
+    - openjdk-8-jdk
     - tint2
-    - autossh
+    - x11-xkb-utils
 
-- name: Install tigervnc
+- name: update java alternatives
+  command: update-java-alternatives -s {{ java_version }}
+
+- name: install tigervnc
   apt: deb={{ tigervnc_url }}
 
-- name: Copy bash script with kepler env variables
-  copy: src=kepler-env.sh dest=/etc/profile.d/kepler-env.sh mode="u=rwx,g=rx,o=rx"
+- name: configure vnc service
+  lineinfile: dest=/etc/default/vncservers create=yes line="VNCSERVERS=0:{{ user }}"
 
-- name: Update java alternatives
-  command: update-java-alternatives -s $JAVA
-  environment:
-    JAVA: "{{ javadir }}"
+# random password generation, currently disabled due to external limitations
+# - name: add new user {{ user }}
+#   user: name={{ user }} password={{ lookup("password", "/tmp/ansible-{{ user }}-password encrypt=sha256_crypt") }} shell=/bin/bash groups=adm,sudo system=yes
 
-- name: Install Kepler 2.5
+- name: add new user {{ user }}
+  user: name={{ user }} password={{ password_crypt }} shell=/bin/bash groups=adm,sudo
+
+- name: create required directories
+  file: path={{ item }} state=directory owner={{ user }} group={{ user }} mode="u=rwx"
+  with_items:
+    - /home/{{ user }}/.config/openbox
+    - /home/{{ user }}/.vnc
+    - /home/{{ user }}/ophidia
+
+- name: copy configuration files
+  copy: src={{ item.src }} dest={{ item.dest }} owner={{ user }} group={{ user }} mode={{ item.mode }}
+  with_items:
+      - { src: "dotconfig_openbox_autostart", dest: "/home/{{ user }}/.config/openbox/autostart", mode: "u=rw" }
+      - { src: "dotconfig_openbox_menu.xml", dest: "/home/{{ user }}/.config/openbox/menu.xml", mode: "u=rw" }
+      - { src: "dotvnc_xstartup", dest: "/home/{{ user }}/.vnc/xstartup", mode: "u=rwx" }
+      - { src: "ophidia_oph-credentials.txt", dest: "/home/{{ user }}/ophidia/oph-credentials.txt", mode: "u=rw" }
+
+- name: prepare kepler launcher in menu which uses correct environment variables
+  template: src=kepler.j2 dest=/usr/bin/kepler mode="u=rwx,g=rx,o=rx"
+
+# random password generation, currently disabled due to external limitations
+# - name: create password file for vnc
+#   shell: echo {{ lookup("password", "/tmp/ansible-vnc-password") }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
+
+- name: create password file for vnc
+  shell: echo {{ password_vnc }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
+
+- name: set valid mode for password file for vnc
+  file: owner={{ user }} group={{ user }} mode="u=rw,g=,o=" path=/home/{{ user }}/.vnc/passwd
+
+- name: install kepler 2.5
   unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
 
-- name: git clone kepler indigo repos
+- name: git-clone indigoclient and indigokepler
   git: repo={{ item.repo }} dest={{ item.dest }} version={{ item.ver }} clone=yes
   with_items:
-    - { repo: "https://github.com/indigo-dc/indigoclient.git", dest: "/usr/local/indigoclient", ver: "v1.0.1" }
-    - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler", ver: "v1.0.1" }
+    - { repo: "https://github.com/indigo-dc/indigoclient.git", dest: "/usr/local/indigoclient", ver: "{{ indigo_kepler_version }}" }
+    - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler", ver: "{{ indigo_kepler_version }}" }
 
-- name: mvn install indigoclient
+- name: compile indigoclient
   command: mvn install chdir=/usr/local/indigoclient
-  environment:
-    JAVA: "{{ javadir }}"
-    JAVA_HOME: "{{ java_home }}"
-    KEPLER: "{{ kepler_home }}"
-    PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
 
-- name: mvn initialize indigokepler
+- name: prepare indigokepler
   command: mvn initialize chdir=/usr/local/indigokepler
-  environment:
-    JAVA: "{{ javadir }}"
-    JAVA_HOME: "{{ java_home }}"
-    KEPLER: "{{ kepler_home }}"
-    PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
 
-- name: mvn install indigokepler
-  command: mvn install chdir=/usr/local/indigokepler
-  environment:
-    JAVA: "{{ javadir }}"
-    JAVA_HOME: "{{ java_home }}"
-    KEPLER: "{{ kepler_home }}"
-    PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
+- name: compile indigokepler
+  command: mvn install dependency:copy-dependencies -DoutputDirectory=target/indigo/lib/jar -DexcludeArtifactIds=ptolemy chdir=/usr/local/indigokepler
 
-- name: mvn dependency indigokepler
-  command: mvn dependency:copy-dependencies -DoutputDirectory=target/indigo/lib/jar -DexcludeArtifactIds=ptolemy chdir=/usr/local/indigokepler
-  environment:
-    JAVA: "{{ javadir }}"
-    JAVA_HOME: "{{ java_home }}"
-    KEPLER: "{{ kepler_home }}"
-    PATH: "{{ ansible_env.PATH }}:{{ kepler_home }}"
-
-- name: copy target/indigo to $KEPLER
+- name: install indigo module in kepler directory
   command: /bin/cp -r /usr/local/indigokepler/target/indigo {{ kepler_home }}/
-  environment:
-    KEPLER: "{{ kepler_home }}"
 
-- name: insert indigo into kepler modules
+- name: configure kepler to use indigo module
   lineinfile: dest={{ kepler_home }}/build-area/modules.txt insertbefore=BOF line=indigo
 
-- name: add user {{ user }}
-  user: name={{ user }} password={{ passcript }} shell=/bin/bash groups=adm,sudo system=yes
-
-- name: make user directories
-  file: path={{ item }} state=directory owner={{ user }} group={{ user }} mode=0700
-  with_items:
-    - /home/{{ user }}/.vnc
-    - /home/{{ user }}/.ssh
-    - /home/{{ user }}/.config/openbox
-
-- name: copy files
-  copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
-  with_items:
-    - { src: "vnc_xstartup", dst: "/home/{{ user }}/.vnc/xstartup" }
-    - { src: "openbox_autostart", dst: "/home/{{ user }}/.config/openbox/autostart" }
-    - { src: "openbox_menu.xml", dst: "/home/{{ user }}/.config/openbox/menu.xml" }
-
 - name: copy indigo workflows
-  copy: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
+  command: cp -r {{ item.src }} {{ item.dest }}
   with_items:
-    - { src: "/usr/local/indigokepler/workflows/ophidia", dst: "/home/{{ user }}/" }
-    - { src: "/usr/local/indigokepler/workflows/ophidia/pilot/OphidiaPilot.kar", dst: "/home/{{ user }}/OphidiaClimateDocker.kar" }
+    - { src: "/usr/local/indigokepler/workflows/ophidia/", dest: "/home/{{ user }}/ophidia/" }
+    - { src: "/usr/local/indigokepler/workflows/ophidia/pilot/OphidiaPilot.kar", dest: "/home/{{ user }}/OphidiaClimateDocker.kar" }
 
-- name: copy templates
-  template: src={{ item.src }} dest={{ item.dst }} owner={{ user }} group={{ user }} mode=700
-  with_items:
-    - { src: "ssh_config.j2", dst: "/home/{{ user }}/.ssh/config" }
-    - { src: "init.sh.j2", dst: "/home/{{ user }}/init.sh" }
-    - { src: "oph-credentials.txt.j2", dst: "/home/{{ user }}/ophidia/oph-credentials.txt" }
-
+- name: start and enable vnc service
+  service: name=vncserver state=started enabled=yes
