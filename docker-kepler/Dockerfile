@@ -7,4 +7,6 @@ RUN ansible-galaxy install indigo-dc.kepler && \
 
 EXPOSE 22 5900
 USER indigo
-CMD /etc/init.d/vmcontext start
+CMD /etc/init.d/vmcontext start && \
+    /bin/rm --force /tmp/.X0-lock /tmp/.X11-unix/X0 && \
+    /usr/bin/vncserver -fg :0
