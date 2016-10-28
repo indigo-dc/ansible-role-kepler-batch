@@ -2,4 +2,4 @@
 - hosts: localhost
   become: true
   roles:
-    - indigo-dc.kepler
+    - ansible-role-kepler
