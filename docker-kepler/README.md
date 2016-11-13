@@ -14,17 +14,12 @@ docker build --rm -t kepler .
 
 
 ```
-docker run -p 2020:22 -p 5900:5900 -d kepler
+docker run -p 5900:5900 -it kepler
 ```
 
-Access through ssh
+Access through VNC
 ```
-ssh -p 2020 ubuntu@localhost
-```
-
-Run kepler
-```
-kepler.sh
+vncviewer localhost:15900
 ```
 
 ## Aknowlegments
