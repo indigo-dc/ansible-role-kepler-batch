@@ -7,58 +7,22 @@
   with_items:
     - git
     - maven
-    - openbox
     - openjdk-8-jdk
-    - tint2
-    - x11-xkb-utils
-    - libgnutls28
-    - libtasn1-3-bin
-    - libxfont1
-    - libglu1-mesa
 
 - name: update java alternatives
   command: update-java-alternatives -s {{ java_version }}
 
-- name: install tigervnc
-  apt: deb={{ tigervnc_url }}
-
-- name: configure vnc service
-  lineinfile: dest=/etc/default/vncservers create=yes line="VNCSERVERS=0:{{ user }}"
-
-# random password generation, currently disabled due to external limitations
-# - name: add new user {{ user }}
-#   user: name={{ user }} password={{ lookup("password", "/tmp/ansible-{{ user }}-password encrypt=sha256_crypt") }} shell=/bin/bash groups=adm,sudo system=yes
-
 - name: add new user {{ user }}
   user: name={{ user }} password={{ password_crypt }} shell=/bin/bash groups=adm,sudo
 
-- name: create required directories
-  file: path={{ item }} state=directory owner={{ user }} group={{ user }} mode="u=rwx"
-  with_items:
-    - /home/{{ user }}/.config/openbox
-    - /home/{{ user }}/.vnc
-    - /home/{{ user }}/ophidia
+- name: create required directory
+  file: path=/home/{{ user }}/ophidia state=directory owner={{ user }} group={{ user }} mode="u=rwx"
 
 - name: copy configuration files
-  copy: src={{ item.src }} dest={{ item.dest }} owner={{ user }} group={{ user }} mode={{ item.mode }}
-  with_items:
-      - { src: "dotconfig_openbox_autostart", dest: "/home/{{ user }}/.config/openbox/autostart", mode: "u=rw" }
-      - { src: "dotconfig_openbox_menu.xml", dest: "/home/{{ user }}/.config/openbox/menu.xml", mode: "u=rw" }
-      - { src: "dotvnc_xstartup", dest: "/home/{{ user }}/.vnc/xstartup", mode: "u=rwx" }
-      - { src: "ophidia_oph-credentials.txt", dest: "/home/{{ user }}/ophidia/oph-credentials.txt", mode: "u=rw" }
+  copy: src=ophidia_oph-credentials.txt dest=/home/{{ user }}/ophidia/oph-credentials.txt owner={{ user }} group={{ user }} mode={{ item.mode }}
 
 - name: prepare kepler launcher in menu which uses correct environment variables
   template: src=kepler.j2 dest=/usr/bin/kepler mode="u=rwx,g=rx,o=rx"
-
-# random password generation, currently disabled due to external limitations
-# - name: create password file for vnc
-#   shell: echo {{ lookup("password", "/tmp/ansible-vnc-password") }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
-
-- name: create password file for vnc
-  shell: echo {{ password_vnc }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
-
-- name: set valid mode for password file for vnc
-  file: owner={{ user }} group={{ user }} mode="u=rw,g=,o=" path=/home/{{ user }}/.vnc/passwd
 
 - name: install kepler 2.5
   unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
@@ -89,6 +53,3 @@
   with_items:
     - { src: "/usr/local/indigokepler/workflows/ophidia/", dest: "/home/{{ user }}/ophidia/" }
     - { src: "/usr/local/indigokepler/workflows/ophidia/pilot/OphidiaPilot.kar", dest: "/home/{{ user }}/OphidiaClimateDocker.kar" }
-
-- name: start and enable vnc service
-  service: name=vncserver state=started enabled=yes

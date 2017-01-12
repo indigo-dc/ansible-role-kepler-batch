@@ -3,4 +3,3 @@
 fg_uri: "http://fgw01.ncg.ingrid.pt:8888"
 indigo_kepler_version: "v1.0.2"
 password_crypt: "$6$rounds=656000$8RSEsGUPGOez.n17$heJprX5dtfL7wPMy40Dgxn/v.2E3/Rrna.IdDTIYVlp9MAriws6LLOTeDGCxqn1/jPVCrZGdYgzueTSulgQOl1"
-password_vnc: "indigo"
