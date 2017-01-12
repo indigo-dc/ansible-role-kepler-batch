@@ -19,7 +19,7 @@
   file: path=/home/{{ user }}/ophidia state=directory owner={{ user }} group={{ user }} mode="u=rwx"
 
 - name: copy configuration files
-  copy: src=ophidia_oph-credentials.txt dest=/home/{{ user }}/ophidia/oph-credentials.txt owner={{ user }} group={{ user }} mode={{ item.mode }}
+  copy: src=ophidia_oph-credentials.txt dest=/home/{{ user }}/ophidia/oph-credentials.txt owner={{ user }} group={{ user }} mode="u=rw"
 
 - name: prepare kepler launcher in menu which uses correct environment variables
   template: src=kepler.j2 dest=/usr/bin/kepler mode="u=rwx,g=rx,o=rx"
