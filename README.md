@@ -9,13 +9,10 @@ Roles and Dockerfiles to install the Kepler Workflow engine:
 Introduction
 ------------
 
-The repository contains ansible-roles that are published in
-ansible galaxy:
-* https://galaxy.ansible.com/indigo-dc/kepler/
+The repository contains ansible-roles that are published in ansible galaxy:
+* https://galaxy.ansible.com/indigo-dc/kepler-batch/
 
-The directory docker-kepler is linked to
-dockerhub with automatic build. This image can run
-the Kepler Workflow engine
+The directory docker-kepler is linked to dockerhub with automatic build. This image can run the Kepler Workflow engine
 
 Requirements
 ------------
@@ -28,17 +25,9 @@ Role Variables
 The variables that can be passed to this role and a brief description
 about them are as follows.
 
-* tigervnc_url: tivervnc deb url
-* kepler_url: kepler tarball url
-* kepler_home: kepler home
-* javadir: java version
-* java_home: java home
-* user: user
-* password: user passwd
-* oph_cred: ophidia credentials
-* launchpadid: LauchpadID of user
-* fguser: Future Gateway user
-* fghost: Future Gateway host
+* futuregateway_uri: URI to a running FutureGateway instance
+* authorization_token: auth token, useful only for short debugging sessions
+* indigo_kepler_version: a version of indigo-dc/indigokepler module to be used
 
 Dependencies
 ------------
@@ -51,7 +40,7 @@ Install the Playbook
 To install the role:
 
 ```
-$ ansible-galaxy install indigo-dc.kepler
+$ ansible-galaxy install indigo-dc.kepler-batch
 ```
 
 Run the playbook
@@ -62,15 +51,15 @@ An example of playbook for the kepler:
 ```
 ---
 - hosts: localhost
-  remote_user: root
+  become: true
   roles:
-    - indigo-dc.kepler
+    - indigo-dc.kepler-batch
 ```
 
 Or execute:
 
 ```
-$ ansible-playbook /etc/ansible/roles/indigo-dc.kepler/tests/kepler.yml
+$ ansible-playbook /etc/ansible/roles/indigo-dc.kepler-batch/tests/kepler.yml
 ```
 
 Run the kepler workflow application
