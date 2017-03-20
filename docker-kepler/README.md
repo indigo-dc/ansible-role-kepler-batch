@@ -7,21 +7,15 @@ Docker image for the kepler scientific workflow engine
 ## Build
 
 ```
-docker build --rm -t kepler .
+docker build --rm -t kepler-batch .
 ```
 
 ## Run the image
 
-
 ```
-docker run -p 5900:5900 -it kepler
-```
-
-Access through VNC
-```
-vncviewer localhost:15900
+docker run kepler-batch
 ```
 
-## Aknowlegments
+## Acknowlegments
 
 https://kepler-project.org/
