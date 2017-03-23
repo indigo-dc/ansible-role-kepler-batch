@@ -58,4 +58,4 @@
   command: /bin/cp -r /usr/local/indigokepler/workflows/ophidia /home/{{ user }}/
 
 - name: set correct permissions and ownership
-  file: path=/home/{{ user }}/ophidia state=directory owner={{ user }}
+  file: path=/home/{{ user }}/ophidia state=directory recurse=yes owner={{ user }}
