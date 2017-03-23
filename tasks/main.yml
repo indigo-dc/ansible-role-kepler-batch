@@ -1,4 +1,7 @@
 ---
+#
+# Packages
+#
 - name: add repository ppa:openjdk-r/ppa
   apt_repository: repo=ppa:openjdk-r/ppa update_cache=yes state=present
 
@@ -12,20 +15,17 @@
 - name: update java alternatives
   command: update-java-alternatives -s {{ java_version }}
 
-- name: add new user {{ user }}
-  user: name={{ user }} password={{ password_crypt }} shell=/bin/bash groups=adm,sudo
+- name: clean package cache
+  command: apt-get clean
 
-- name: create required directory
-  file: path=/home/{{ user }}/ophidia state=directory owner={{ user }} group={{ user }} mode="u=rwx"
-
-- name: copy configuration files
-  copy: src=ophidia_oph-credentials.txt dest=/home/{{ user }}/ophidia/oph-credentials.txt owner={{ user }} group={{ user }} mode="u=rw"
+#
+# Kepler
+#
+- name: install kepler 2.5
+  unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
 
 - name: prepare kepler launcher in menu which uses correct environment variables
   template: src=kepler.j2 dest=/usr/bin/kepler mode="u=rwx,g=rx,o=rx"
-
-- name: install kepler 2.5
-  unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
 
 - name: git-clone indigoclient and indigokepler
   git: repo={{ item.repo }} dest={{ item.dest }} version={{ item.ver }} clone=yes
@@ -48,8 +48,14 @@
 - name: configure kepler to use indigo module
   lineinfile: dest={{ kepler_home }}/build-area/modules.txt insertbefore=BOF line=indigo
 
-- name: copy indigo workflows
-  command: cp -r {{ item.src }} {{ item.dest }}
-  with_items:
-    - { src: "/usr/local/indigokepler/workflows/ophidia/", dest: "/home/{{ user }}/ophidia/" }
-    - { src: "/usr/local/indigokepler/workflows/ophidia/pilot/OphidiaPilot.kar", dest: "/home/{{ user }}/OphidiaClimateDocker.kar" }
+#
+# User
+#
+- name: add new user {{ user }}
+  user: name={{ user }} password={{ password_crypt }} shell=/bin/bash groups=adm,sudo
+
+#
+# Finalize
+#
+- name: create symbolic link
+  file: src=/usr/local/indigokepler/workflows/ophidia dest=/home/{{ user }}/ state=link
