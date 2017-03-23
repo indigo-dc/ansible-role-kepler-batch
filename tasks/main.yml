@@ -16,7 +16,7 @@
   command: update-java-alternatives -s {{ java_version }}
 
 - name: clean package cache
-  command: apt-get clean
+  file: path=/var/lib/apt/lists/ state=absent
 
 #
 # Kepler
@@ -58,4 +58,4 @@
 # Finalize
 #
 - name: create symbolic link
-  file: src=/usr/local/indigokepler/workflows/ophidia dest=/home/{{ user }}/ state=link
+  file: src=/usr/local/indigokepler/workflows/ophidia dest=/home/{{ user }}/ophidia state=link
