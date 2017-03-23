@@ -54,5 +54,8 @@
 #
 # Finalize
 #
-- name: create symbolic link
-  file: src=/usr/local/indigokepler/workflows/ophidia dest=/home/{{ user }}/ophidia state=link
+- name: copy ophidia contents
+  command: /bin/cp -r /usr/local/indigokepler/workflows/ophidia /home/{{ user }}/
+
+- name: set correct permissions and ownership
+  file: path=/home/{{ user }}/ophidia state=directory owner={{ user }}
