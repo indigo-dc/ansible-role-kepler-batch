@@ -46,10 +46,10 @@
   lineinfile: dest={{ kepler_home }}/build-area/modules.txt insertbefore=BOF line=indigo
 
 - name: configure kepler to work in non-gui mode
-  lineinfile: dest={{ item.dest }} line={{ item.line }} insertafter=EOF
-  with_items:
-    - { dest: "{{ kepler_home }}/display-redirect-1.1/src/org/kepler/ActorModuleDefault.properties", line: "pl.psnc.indigo.fg.kepler.helper.ShowSVGInterface=pl.psnc.indigo.fg.kepler.helper.ShowSVGJavaSe" }
-    - { dest: "{{ kepler_home }}/display-redirect-1.1/src/org/kepler/ActorModuleBatch.properties", line: "pl.psnc.indigo.fg.kepler.helper.ShowSVGInterface=pl.psnc.indigo.fg.kepler.helper.ShowSVGBatch" }
+  lineinfile:
+    path: {{ kepler_home }}/common-2.5.0/configs/ptolemy/configs/kepler/KeplerDisplayActorWithRedirect.xml
+    regexp: 'value.*">'
+    line: 'value="org.kepler.actor.gui.XMLViewer,org.geon.BrowserDisplay,pl.psnc.indigo.fg.kepler.helper.ShowSVG">'
 
 #
 # User
