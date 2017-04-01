@@ -3,4 +3,3 @@ kepler_url: "https://code.kepler-project.org/code/kepler/releases/installers/2.5
 kepler_home: "/usr/local/Kepler-2.5"
 java_version: "java-1.8.0-openjdk-amd64"
 user: "indigo"
-password_crypt: "$6$rounds=656000$8RSEsGUPGOez.n17$heJprX5dtfL7wPMy40Dgxn/v.2E3/Rrna.IdDTIYVlp9MAriws6LLOTeDGCxqn1/jPVCrZGdYgzueTSulgQOl1"
