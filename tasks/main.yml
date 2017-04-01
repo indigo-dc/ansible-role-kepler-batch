@@ -25,10 +25,10 @@
   unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
 
 - name: git-clone indigoclient and indigokepler
-  git: repo={{ item.repo }} dest={{ item.dest }} version={{ item.ver }} clone=yes
+  git: repo={{ item.repo }} dest={{ item.dest }} version={{ indigo_kepler_version }} clone=yes
   with_items:
-    - { repo: "https://github.com/indigo-dc/indigoclient.git", dest: "/usr/local/indigoclient", ver: "{{ indigo_kepler_version }}" }
-    - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler", ver: "{{ indigo_kepler_version }}" }
+    - { repo: "https://github.com/indigo-dc/indigoclient.git", dest: "/usr/local/indigoclient" }
+    - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler" }
 
 - name: compile indigoclient
   command: mvn install chdir=/usr/local/indigoclient
@@ -45,12 +45,6 @@
 - name: configure kepler to use indigo module
   lineinfile: dest={{ kepler_home }}/build-area/modules.txt insertbefore=BOF line=indigo
 
-- name: configure kepler to work in non-gui mode
-  lineinfile:
-    path: "{{ kepler_home }}/common-2.5.0/configs/ptolemy/configs/kepler/KeplerDisplayActorWithRedirect.xml"
-    regexp: 'value.*">'
-    line: 'value="org.kepler.actor.gui.XMLViewer,org.geon.BrowserDisplay,pl.psnc.indigo.fg.kepler.helper.ShowSVG">'
-
 #
 # User
 #
@@ -60,5 +54,8 @@
 #
 # Finalize
 #
-- name: create symbolic link
-  file: src=/usr/local/indigokepler/workflows/ophidia dest=/home/{{ user }}/ophidia state=link
+- name: copy ophidia contents
+  command: /bin/cp -r /usr/local/indigokepler/workflows/ophidia /home/{{ user }}/
+
+- name: set correct permissions and ownership
+  file: path=/home/{{ user }}/ophidia state=directory recurse=yes owner={{ user }}

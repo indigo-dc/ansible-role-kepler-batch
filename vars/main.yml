@@ -1,5 +1,2 @@
 ---
-# vars file for ansible-role-kepler
-futuregateway_uri: "http://fgw01.ncg.ingrid.pt:8888"
-authorization_token: ""
-indigo_kepler_version: "v1.1-rc2"
+indigo_kepler_version: "v1.1"

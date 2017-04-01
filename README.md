@@ -25,8 +25,6 @@ Role Variables
 The variables that can be passed to this role and a brief description
 about them are as follows.
 
-* futuregateway_uri: URI to a running FutureGateway instance
-* authorization_token: auth token, useful only for short debugging sessions
 * indigo_kepler_version: a version of indigo-dc/indigokepler module to be used
 
 Dependencies
