@@ -49,7 +49,7 @@
 # User
 #
 - name: add new user {{ user }}
-  user: name={{ user }} password={{ lookup("password", "/tmp/ansible-{{ user }}-password encrypt=sha256_crypt") }} shell=/bin/bash groups=adm,sudo system=yes
+  user: name={{ user }} password={{ password_crypt }} shell=/bin/bash groups=adm,sudo
 
 #
 # Finalize
