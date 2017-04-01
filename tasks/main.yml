@@ -25,10 +25,10 @@
   unarchive: src={{ kepler_url }} dest=/usr/local copy=no keep_newer=yes
 
 - name: git-clone indigoclient and indigokepler
-  git: repo={{ item.repo }} dest={{ item.dest }} version={{ item.ver }} clone=yes
+  git: repo={{ item.repo }} dest={{ item.dest }} version={{ indigo_kepler_version }} clone=yes
   with_items:
-    - { repo: "https://github.com/indigo-dc/indigoclient.git", dest: "/usr/local/indigoclient", ver: "{{ indigo_kepler_version }}" }
-    - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler", ver: "{{ indigo_kepler_version }}" }
+    - { repo: "https://github.com/indigo-dc/indigoclient.git", dest: "/usr/local/indigoclient" }
+    - { repo: "https://github.com/indigo-dc/indigokepler.git", dest: "/usr/local/indigokepler" }
 
 - name: compile indigoclient
   command: mvn install chdir=/usr/local/indigoclient
