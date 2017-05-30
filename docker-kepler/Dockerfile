@@ -2,8 +2,10 @@ FROM indigodatacloud/ubuntu-sshd:14.04
 MAINTAINER Mario David <mariojmdavid@gmail.com>
 LABEL description="Container image to run Kepler WF engine"
 
+ARG github_tag=master
+
 RUN ansible-galaxy install indigo-dc.kepler-batch && \
-    ansible-playbook /etc/ansible/roles/indigo-dc.kepler-batch/tests/kepler.yml
+    ansible-playbook /etc/ansible/roles/indigo-dc.kepler-batch/tests/kepler.yml --extra-vars "indigo_kepler_version=$github_tag"
 
 USER indigo
 ENV FUTUREGATEWAY_URI 'set_this_when_running_docker'
