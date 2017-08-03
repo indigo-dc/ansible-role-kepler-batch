@@ -2,8 +2,8 @@ FROM indigodatacloud/ubuntu-sshd:14.04
 MAINTAINER Mario David <mariojmdavid@gmail.com>
 LABEL description="Container image to run Kepler WF engine"
 
-ARG indigo_kepler_version=v1.1.1
-ARG ansible_role_version=v1.1.1
+ARG indigo_kepler_version=v1.2
+ARG ansible_role_version=v1.2
 
 RUN ansible-galaxy install indigo-dc.kepler-batch,$ansible_role_version && \
     ansible-playbook /etc/ansible/roles/indigo-dc.kepler-batch/tests/kepler.yml --extra-vars "indigo_kepler_version=$indigo_kepler_version"
