@@ -1,4 +1,4 @@
-FROM indigodatacloud/ubuntu-sshd:14.04
+FROM indigodatacloud/ubuntu16.04-sshd:16.04
 MAINTAINER Mario David <mariojmdavid@gmail.com>
 LABEL description="Container image to run Kepler WF engine"
 
